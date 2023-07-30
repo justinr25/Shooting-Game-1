@@ -186,8 +186,8 @@ let score
 let isGameOver
 let timer
 let bgRectColor
-let enemySpawnInterval = 1000
-let enemySpeedMultiplier = 1
+let enemySpawnInterval
+let enemySpeedMultiplier
 
 function init() {
     player = new Player(canvas.width / 2, canvas.height / 2, 40, `hsl(202, 100%, 50%)`, {x: 0, y: 0}, 1)
@@ -202,11 +202,13 @@ function init() {
     scoreEl.innerHTML = score
     points.innerHTML = score
     clearInterval(timer)
+    enemySpawnInterval = 1000
+    enemySpeedMultiplier = 1
 }
 
 function spawnEnemies() {
     timer = setInterval(() => {
-        const radius = randomIntFromRange(15, 80)
+        const radius = randomIntFromRange(15, 120)
         let x
         let y
         const randNum = Math.random()
@@ -343,7 +345,7 @@ function animate() {
     })
     player.update()
 
-    // console.log(enemySpawnInterval, enemySpeedMultiplier)
+    console.log(enemySpawnInterval, enemySpeedMultiplier)
 }
 
 init()
