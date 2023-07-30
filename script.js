@@ -299,7 +299,7 @@ function animate() {
                     enemySpawnInterval -= 2.5
 
                     // increase enemy speed 
-                    enemySpeedMultiplier += 0.001
+                    enemySpeedMultiplier += 0.005
 
                     // increase max enemy size
                     maxEnemySize += 1
@@ -322,7 +322,7 @@ function animate() {
                     enemySpawnInterval -= 1
 
                     // increase enemy speed 
-                    enemySpeedMultiplier += 0.0005
+                    enemySpeedMultiplier += 0.001
 
                     // increase max enemy size
                     maxEnemySize += 0.25
