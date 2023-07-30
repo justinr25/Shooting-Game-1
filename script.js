@@ -188,6 +188,7 @@ let timer
 let bgRectColor
 let enemySpawnInterval
 let enemySpeedMultiplier
+let maxEnemySize
 
 function init() {
     player = new Player(canvas.width / 2, canvas.height / 2, 40, `hsl(202, 100%, 50%)`, {x: 0, y: 0}, 1)
@@ -197,18 +198,19 @@ function init() {
     score = 0
     isGameOver = true
     bgRectColor = 0
+    enemySpawnInterval = 1000
+    enemySpeedMultiplier = 1
+    maxEnemySize = 120
     scoreContainer.style.display = 'none'
     gameOverContainer.style.display = 'flex'
     scoreEl.innerHTML = score
     points.innerHTML = score
     clearInterval(timer)
-    enemySpawnInterval = 1000
-    enemySpeedMultiplier = 1
 }
 
 function spawnEnemies() {
     timer = setInterval(() => {
-        const radius = randomIntFromRange(15, 120)
+        const radius = randomIntFromRange(15, maxEnemySize)
         let x
         let y
         const randNum = Math.random()
@@ -298,6 +300,9 @@ function animate() {
 
                     // increase enemy speed 
                     enemySpeedMultiplier += 0.001
+
+                    // increase max enemy size
+                    maxEnemySize += 1
                     
                     // remove enemy
                     setTimeout(() => {
@@ -318,6 +323,9 @@ function animate() {
 
                     // increase enemy speed 
                     enemySpeedMultiplier += 0.0005
+
+                    // increase max enemy size
+                    maxEnemySize += 0.25
                 }
             }
         })
@@ -345,7 +353,7 @@ function animate() {
     })
     player.update()
 
-    console.log(enemySpawnInterval, enemySpeedMultiplier)
+    console.log(enemySpawnInterval, enemySpeedMultiplier, maxEnemySize)
 }
 
 init()
