@@ -16,7 +16,6 @@ let mouse = {
     x: undefined,
     y: undefined,
 }
-
 const enemyColors = [
     '#E87900',
     '#FFA400',
@@ -24,6 +23,20 @@ const enemyColors = [
     '#E83600',
     '#FF1600'
 ]
+const keys = {
+    up: {
+        pressed: false
+    },
+    left: {
+        pressed: false
+    },
+    down: {
+        pressed: false
+    },
+    right: {
+        pressed: false
+    }
+}
 
 // event listeners
 addEventListener('mousemove', (event) => {
@@ -75,6 +88,14 @@ class Player {
         if (this.y - this.radius + this.velocity.y < 0 || this.y + this.radius + this.velocity.y > canvas.height) {
             this.velocity.y = 0
         }
+
+        // update player velocity
+        if (keys.up.pressed) this.velocity.y = -2
+        else if (keys.down.pressed) this.velocity.y = 2
+        else this.velocity.y = 0
+        if (keys.left.pressed) this.velocity.x = -2
+        else if (keys.right.pressed) this.velocity.x = 2
+        else this.velocity.x = 0
 
         // update player position
         this.x += this.velocity.x * this.speed
@@ -353,7 +374,8 @@ function animate() {
     })
     player.update()
 
-    console.log(enemySpawnInterval, enemySpeedMultiplier, maxEnemySize)
+    // console.log(enemySpawnInterval, enemySpeedMultiplier, maxEnemySize)
+    // console.log(keys)
 }
 
 init()
@@ -380,32 +402,32 @@ addEventListener('click', () => {
 addEventListener('keydown', (event) => {
     switch (event.key) {
         case 'w':
-            player.velocity.y = -2
+            keys.up.pressed = true
             break
         case 'a':
-            player.velocity.x = -2
+            keys.left.pressed = true
             break
         case 's':
-            player.velocity.y = 2
+            keys.down.pressed = true
             break
         case 'd':
-            player.velocity.x = 2
+            keys.right.pressed = true
     }
 })
 
 addEventListener('keyup', (event) => {
     switch (event.key) {
         case 'w':
-            player.velocity.y = 0
+            keys.up.pressed = false
             break
         case 'a':
-            player.velocity.x = 0
+            keys.left.pressed = false
             break
         case 's':
-            player.velocity.y = 0
+            keys.down.pressed = false
             break
         case 'd':
-            player.velocity.x = 0
+            keys.right.pressed = false
     }
 })
 
