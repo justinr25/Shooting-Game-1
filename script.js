@@ -12,10 +12,6 @@ const startGameBtn = document.querySelector('#startGameBtn')
 const gameOverContainer = document.querySelector('#gameOverContainer')
 
 // variables
-let mouse = {
-    x: undefined,
-    y: undefined,
-}
 const enemyColors = [
     '#E87900',
     '#FFA400',
@@ -39,26 +35,12 @@ const keys = {
 }
 
 // event listeners
-addEventListener('mousemove', (event) => {
-    mouse.x = event.clientX
-    mouse.y = event.clientY
-})
-
 addEventListener('resize', () => {
     canvas.width = innerWidth
     canvas.height = innerHeight
     cancelAnimationFrame(animationId)
     init()
 })
-
-// utility functions
-function distance(x1, y1, x2, y2) {
-    return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
-}
-
-function randomIntFromRange(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min
-}
 
 // objects
 class Player {
@@ -209,6 +191,7 @@ let timer
 let bgRectColor
 let enemySpawnInterval
 let enemySpeedMultiplier
+let minEnemySize
 let maxEnemySize
 
 function init() {
@@ -221,6 +204,7 @@ function init() {
     bgRectColor = 0
     enemySpawnInterval = 1000
     enemySpeedMultiplier = 1
+    minEnemySize = 15
     maxEnemySize = 120
     scoreContainer.style.display = 'none'
     gameOverContainer.style.display = 'flex'
@@ -231,16 +215,18 @@ function init() {
 
 function spawnEnemies() {
     timer = setInterval(() => {
-        const radius = randomIntFromRange(15, maxEnemySize)
+        const radius = (maxEnemySize - minEnemySize) * Math.random() + minEnemySize
         let x
         let y
         const randNum = Math.random()
         if (randNum < 0.5) {
-            x = randomIntFromRange(0, canvas.width)
+            // enemy spawns on bottom or top
+            x = canvas.width * Math.random()
             y = Math.random() < 0.5 ? y = -radius : y = canvas.height + radius
         } else {
+            // enemy spawns on left or right
             x = Math.random() < 0.5 ? x = -radius : x = canvas.width + radius
-            y = randomIntFromRange(0, canvas.height)
+            y = canvas.height * Math.random()
         }
         const color = enemyColors[Math.floor(Math.random() * enemyColors.length)]
         const angle = Math.atan2(player.y - y, player.x - x)
@@ -280,7 +266,7 @@ function animate() {
 
         // handle projectile and enemy collision
         projectiles.forEach((projectile, index) => {
-            if (distance(projectile.x, projectile.y, enemy.x, enemy.y) <= projectile.radius + enemy.radius) {
+            if (Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y) <= projectile.radius + enemy.radius) {
                 // spawn particles on hit
                 for (let j = 0; j < enemy.radius; j++) {
                     particles.push(new Particle(projectile.x, projectile.y, Math.random() * 3, enemy.color, {x: (Math.random() - 0.5) * (Math.random() * 10), y: (Math.random() - 0.5) * (Math.random() * 10)}, 1))
@@ -292,7 +278,7 @@ function animate() {
                 }, 0)
 
                 // decrement enemy radius
-                if (enemy.radius - projectile.damage >= 15) {
+                if (enemy.radius - projectile.damage >= minEnemySize) {
                     gsap.to(enemy, {
                         duration: .15,
                         ease: "power4.out",
@@ -303,7 +289,7 @@ function animate() {
                 }
 
                 // enemy death
-                if (enemy.radius < 15) {
+                if (enemy.radius < minEnemySize) {
                     // flash background white
                     bgRectColor = 180
 
@@ -352,7 +338,7 @@ function animate() {
         })
 
         // game over detection
-        if (distance(player.x, player.y, enemy.x, enemy.y) <= player.radius + enemy.radius) {
+        if (Math.hypot(player.x - enemy.x, player.y - enemy.y) <= player.radius + enemy.radius) {
             cancelAnimationFrame(animationId)
             scoreContainer.style.display = 'none'
             gameOverContainer.style.display = 'flex'
@@ -381,7 +367,7 @@ function animate() {
 init()
 
 // spawn projectile on click
-addEventListener('click', () => {
+addEventListener('click', (event) => {
     if (!isGameOver) {
         // play shoot sound effect
         const shootSoundEffect = new Audio('./media/small-hit-sound-effect.wav')
@@ -389,7 +375,7 @@ addEventListener('click', () => {
         shootSoundEffect.play()
         
         // spawn projectile
-        const angle = Math.atan2(mouse.y - player.y, mouse.x - player.x)
+        const angle = Math.atan2(event.clientY - player.y, event.clientX - player.x)
         const velocity = {
             x: Math.cos(angle),
             y: Math.sin(angle)
