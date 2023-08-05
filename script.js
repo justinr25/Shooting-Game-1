@@ -90,11 +90,11 @@ class Player {
         }
 
         // update player velocity
-        if (keys.up.pressed) this.velocity.y = -2
-        else if (keys.down.pressed) this.velocity.y = 2
+        if (keys.up.pressed) this.velocity.y = -1
+        else if (keys.down.pressed) this.velocity.y = 1
         else this.velocity.y = 0
-        if (keys.left.pressed) this.velocity.x = -2
-        else if (keys.right.pressed) this.velocity.x = 2
+        if (keys.left.pressed) this.velocity.x = -1
+        else if (keys.right.pressed) this.velocity.x = 1
         else this.velocity.x = 0
 
         // update player position
@@ -212,7 +212,7 @@ let enemySpeedMultiplier
 let maxEnemySize
 
 function init() {
-    player = new Player(canvas.width / 2, canvas.height / 2, 40, `hsl(202, 100%, 50%)`, {x: 0, y: 0}, 1)
+    player = new Player(canvas.width / 2, canvas.height / 2, 40, `hsl(202, 100%, 50%)`, {x: 0, y: 0}, 2)
     projectiles = []
     enemies = []
     particles = []
@@ -308,7 +308,7 @@ function animate() {
                     bgRectColor = 180
 
                     // play death sound effect
-                    const deathSoundEFfect = new Audio('Media/explosion-sound-effect.wav')
+                    const deathSoundEFfect = new Audio('./media/explosion-sound-effect.wav')
                     deathSoundEFfect.volume = .15
                     deathSoundEFfect.play()
                     
@@ -331,7 +331,7 @@ function animate() {
                     }, 0)
                 } else {
                     // play hit sound effect
-                    const hitSoundEffect = new Audio('Media/arcade-bling-sound-effect.wav')
+                    const hitSoundEffect = new Audio('./media/arcade-bling-sound-effect.wav')
                     hitSoundEffect.volume = .1
                     hitSoundEffect.play()
 
@@ -359,7 +359,7 @@ function animate() {
             points.innerHTML = score
             isGameOver = true
 
-            const arcadeExplosion = new Audio('Media/arcade-game-explosion.wav')
+            const arcadeExplosion = new Audio('./media/arcade-game-explosion.wav')
             arcadeExplosion.volume = 0.2
             arcadeExplosion.play()
         }
@@ -384,7 +384,7 @@ init()
 addEventListener('click', () => {
     if (!isGameOver) {
         // play shoot sound effect
-        const shootSoundEffect = new Audio('Media/small-hit-sound-effect.wav')
+        const shootSoundEffect = new Audio('./media/small-hit-sound-effect.wav')
         shootSoundEffect.volume = .1
         shootSoundEffect.play()
         
@@ -402,15 +402,19 @@ addEventListener('click', () => {
 addEventListener('keydown', (event) => {
     switch (event.key) {
         case 'w':
+        case 'ArrowUp':
             keys.up.pressed = true
             break
         case 'a':
+        case 'ArrowLeft':
             keys.left.pressed = true
             break
         case 's':
+        case 'ArrowDown':
             keys.down.pressed = true
             break
         case 'd':
+        case 'ArrowRight':
             keys.right.pressed = true
     }
 })
@@ -418,15 +422,19 @@ addEventListener('keydown', (event) => {
 addEventListener('keyup', (event) => {
     switch (event.key) {
         case 'w':
+        case 'ArrowUp':
             keys.up.pressed = false
             break
         case 'a':
+        case 'ArrowLeft':
             keys.left.pressed = false
             break
         case 's':
+        case 'ArrowDown':
             keys.down.pressed = false
             break
         case 'd':
+        case 'ArrowRight':
             keys.right.pressed = false
     }
 })
